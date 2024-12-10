@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<AssemblyName>Linn.Visitors.Domain</AssemblyName>
+		<RootNamespace>Linn.Visitors.Domain</RootNamespace>
+	</PropertyGroup>
+
+</Project>
