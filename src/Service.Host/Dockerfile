@@ -16,4 +16,4 @@ COPY views/ /app/views/
 ENV APP_PATH /app/
 ENV GIT_BRANCH $gitBranch
 
-CMD dotnet /app/bin/Linn.Visitors.Service.Host.dll
+CMD dotnet /app/bin/Linn.Stores2.Service.Host.dll
