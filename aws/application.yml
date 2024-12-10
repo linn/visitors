@@ -1,5 +1,5 @@
 ---
-Description: Template
+Description: Visitors
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   dockerTag:
@@ -69,12 +69,12 @@ Conditions:
     - !Equals [!Ref environmentSuffix, "-sys"]
 
 Resources:
-  templateRole:
+  visitorsRole:
     Type: AWS::IAM::Role
     Properties:
       Tags:
         - Key: "Project"
-          Value: "template"
+          Value: "visitors"
         - Key: "CIT"
           Value: "IT"
         - Key: AppManagerCFNStackKey
@@ -88,7 +88,7 @@ Resources:
             Action: ["sts:AssumeRole"]
       Path: "/"
       Policies:
-        - PolicyName: templateServices
+        - PolicyName: visitorsServices
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -119,22 +119,22 @@ Resources:
                 Action:
                   - s3:*
                 Resource: !Sub "arn:aws:s3:::auth${environmentSuffix}*-keysbucket*"
-  templateTaskDefinition:
+  visitorsTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Tags:
         - Key: "Project"
-          Value: "template"
+          Value: "visitors"
         - Key: "CIT"
           Value: "IT"
         - Key: AppManagerCFNStackKey
           Value: !Sub ${AWS::StackId}
-      TaskRoleArn: !GetAtt templateRole.Arn
+      TaskRoleArn: !GetAtt visitorsRole.Arn
       ContainerDefinitions:
-        - Name: template
+        - Name: visitors
           Cpu: '1'
           Essential: 'true'
-          Image: !Sub docker.io/linn/template:${dockerTag}
+          Image: !Sub docker.io/linn/visitors:${dockerTag}
           PortMappings:
             - ContainerPort: 5050
           Memory: '500'
@@ -144,14 +144,14 @@ Resources:
               - "curl -f http://localhost:5050/healthcheck || exit 1"
           DockerLabels:
             traefik.enable: true
-            traefik.http.routers.template.entrypoints: web
-            traefik.http.routers.template.rule: "PathPrefix(`/template`)"
-            traefik.http.services.template.loadbalancer.healthcheck.path: "/healthcheck"
+            traefik.http.routers.visitors.entrypoints: web
+            traefik.http.routers.visitors.rule: "PathPrefix(`/visitors`)"
+            traefik.http.services.visitors.loadbalancer.healthcheck.path: "/healthcheck"
           LogConfiguration:
             LogDriver: gelf
             Options:
               'gelf-address': 'udp://syslog.linn.co.uk:12201'
-              'tag': !Sub template-${dockerTag}-ecs-task
+              'tag': !Sub visitors-${dockerTag}-ecs-task
           Environment:
             - Name: DATABASE_HOST
               Value: !Ref databaseHost
@@ -195,21 +195,21 @@ Resources:
               Value:
                 Fn::ImportValue:
                   !Sub "kms-key-alias${environmentSuffix}"
-  # templateMessagingTaskDefinition:
+  # visitorsMessagingTaskDefinition:
   #   Type: AWS::ECS::TaskDefinition
   #   Properties:
   #     Tags:
   #       - Key: "Project"
-  #         Value: "template"
+  #         Value: "visitors"
   #       - Key: "CIT"
   #         Value: "IT"
   #       - Key: AppManagerCFNStackKey
   #         Value: !Sub ${AWS::StackId}
-  #     TaskRoleArn: !GetAtt templateRole.Arn
+  #     TaskRoleArn: !GetAtt visitorsRole.Arn
   #     ContainerDefinitions:
-  #       - Name: templateMessaging
+  #       - Name: visitorsMessaging
   #         Essential: 'true'
-  #         Image: !Sub docker.io/linn/template-messaging:${dockerTag}
+  #         Image: !Sub docker.io/linn/visitors-messaging:${dockerTag}
   #         PortMappings:
   #           - ContainerPort: 5050
   #         Memory: '150'
@@ -217,7 +217,7 @@ Resources:
   #           LogDriver: gelf
   #           Options:
   #             'gelf-address': 'udp://syslog.linn.co.uk:12201'
-  #             'tag': !Sub template-messaging-${dockerTag}-ecs-task
+  #             'tag': !Sub visitors-messaging-${dockerTag}-ecs-task
   #         Environment:
   #           - Name: DATABASE_HOST
   #             Value: !Ref databaseHost
@@ -247,12 +247,12 @@ Resources:
   #             Value: !Ref loggingMaxInnerExceptionDepth
   #           - Name: awsRegion
   #             Value: !Ref AWS::Region
-  templateService:
+  visitorsService:
     Type: AWS::ECS::Service
     Properties:
       Tags:
         - Key: "Project"
-          Value: "template"
+          Value: "visitors"
         - Key: "CIT"
           Value: "IT"
         - Key: AppManagerCFNStackKey
@@ -268,13 +268,13 @@ Resources:
           Type: spread
         - Field: instanceId
           Type: spread
-      TaskDefinition: !Ref templateTaskDefinition
-  # templateMessagingService:
+      TaskDefinition: !Ref visitorsTaskDefinition
+  # visitorsMessagingService:
   #   Type: AWS::ECS::Service
   #   Properties:
   #     Tags:
   #       - Key: "Project"
-  #         Value: "template"
+  #         Value: "visitors"
   #       - Key: "CIT"
   #         Value: "IT"
   #       - Key: AppManagerCFNStackKey
@@ -285,4 +285,4 @@ Resources:
   #       - !Sub ${TestClusterName}
   #       - !Sub ${ProductionClusterName}
   #     DesiredCount: !If [isTesting, 1, 1]
-  #     TaskDefinition: !Ref templateMessagingTaskDefinition
+  #     TaskDefinition: !Ref visitorsMessagingTaskDefinition

@@ -15,12 +15,12 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/", this.Redirect);
-            app.MapGet("/template", this.GetApp);
+            app.MapGet("/visitors", this.GetApp);
         }
 
         private Task Redirect(HttpRequest req, HttpResponse res)
         {
-            res.Redirect("/template");
+            res.Redirect("/visitors");
             return Task.CompletedTask;
         }
 

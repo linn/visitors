@@ -21,7 +21,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, '../client/build'),
         filename: '[name].js',
-        publicPath: '/template/build/'
+        publicPath: '/visitors/build/'
     },
     module: {
         rules: [

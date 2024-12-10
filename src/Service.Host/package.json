@@ -1,7 +1,7 @@
 {
-  "name": "template",
+  "name": "visitors",
   "version": "1.0.0",
-  "description": "template",
+  "description": "visitors",
   "main": "index.js",
   "scripts": {
     "noEmitOnError": "true",
