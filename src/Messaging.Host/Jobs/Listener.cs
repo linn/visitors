@@ -32,7 +32,7 @@ public class Listener : BackgroundService
         ChannelConfiguration channelConfiguration,
         ILog logger)
     {
-        this.queueName = "template";
+        this.queueName = "visitors";
         this.consumer = consumer;
         this.logger = logger;
         this.channelConfiguration = channelConfiguration;
