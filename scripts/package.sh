@@ -2,8 +2,8 @@
 set -ev
 
 # build dotnet application
-dotnet publish ./src/Service.Host/Service.Host.csproj -c release -o ./bin/release/publish
 
+dotnet publish ./src/Service.Host/ -c release
 # dotnet publish ./src/Messaging.Host/ -c release
 # dotnet publish ./src/Scheduling.Host/ -c release
 
