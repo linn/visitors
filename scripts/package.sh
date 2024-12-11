@@ -2,13 +2,7 @@
 set -ev
 
 # build dotnet application
-dotnet build -c release -p:OutputPath=./bin/release
-
-for project in ./src/*/; do
-    if [ -f "$project/*.csproj" ]; then
-        dotnet publish "$project" -c release --no-build -o ./bin/release
-    fi
-done
+dotnet publish ./src/Service.Host/Service.Host.csproj -c release -o ./bin/release
 
 # dotnet publish ./src/Messaging.Host/ -c release
 # dotnet publish ./src/Scheduling.Host/ -c release
