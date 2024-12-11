@@ -2,7 +2,7 @@
 set -ev
 
 # build dotnet application
-dotnet build -c release
+dotnet build -c release -p:OutputPath=./bin/release
 
 for project in ./src/*/; do
     if [ -f "$project/*.csproj" ]; then
